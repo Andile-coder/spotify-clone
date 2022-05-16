@@ -1,4 +1,4 @@
-import react, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Login from "./Login";
 import SpotifyWebApi from "spotify-web-api-js";
@@ -21,11 +21,27 @@ function App() {
       spotify.getMe().then((user) => {
         dispatch({ type: "SET_USER", user: user });
       });
+
+      spotify.getUserPlaylists().then((playlists) => {
+        dispatch({
+          type: "SET_PLAYLISTS",
+          playlists: playlists,
+        });
+      });
+
+      spotify.getPlaylist("0DQBYiyx1tzJZxTuY2E6EL").then((playlist) => {
+        dispatch({
+          type: "SET_DISCOVER_WEEKLY",
+          discover_weekly: playlist,
+        });
+      });
     }
-    console.log("person++", user);
-    console.log("token", token);
   });
-  return <div className="App">{token ? <Player /> : <Login />}</div>;
+  return (
+    <div className="App">
+      {token ? <Player spotify={spotify} /> : <Login />}
+    </div>
+  );
 }
 
 export default App;
